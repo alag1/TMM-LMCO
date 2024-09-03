@@ -22,5 +22,5 @@ This project is a real-time simulation of robots navigating through a grid map w
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/<username>/<repository>.git
-   cd <repository>
+   git clone https://github.com/alag1/TMM-LMCO.git
+   cd TMM-LMCO
