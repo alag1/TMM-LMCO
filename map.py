@@ -3448,6 +3448,217 @@
 #         time.sleep(1)
 
 
+# #Final
+# import streamlit as st
+# import plotly.graph_objects as go
+# import time
+# import random
+# from PIL import Image
+
+# def generate_intermediate_path(start, end):
+#     path = [start]
+#     x1, y1 = start
+#     x2, y2 = end
+#     while (x1, y1) != (x2, y2):
+#         if x1 < x2:
+#             x1 += 1
+#         elif x1 > x2:
+#             x1 -= 1
+#         if y1 < y2:
+#             y1 += 1
+#         elif y1 > y2:
+#             y1 -= 1
+#         path.append((x1, y1))
+#     return path
+
+# def generate_messages(path, robot_name, color):
+#     messages = {}
+#     num_points = len(path)
+#     intervals = max(1, num_points // 6)
+#     for i in range(1, num_points):
+#         if i % intervals == 0:
+#             messages[path[i]] = f"<b>Alert! <span style='color:{color};'>{robot_name}</span> is delayed and has reached {path[i]}.</b>"
+#     if path[-1] not in messages:
+#         messages[path[-1]] = f"<b><span style='color:{color};'>{robot_name}</span> has reached its destination at {path[-1]}.</b>"
+#     return messages
+
+# def generate_obstacles(num_obstacles, robot_paths):
+#     obstacles = []
+#     for _ in range(num_obstacles):
+#         x = random.randint(0, 50)
+#         y = random.randint(0, 50)
+#         if any((x, y) in path for path in robot_paths):
+#             continue
+#         obstacles.append((x, y))
+#     return obstacles
+
+# # Define robots' start and end positions
+# robot_positions = {
+#     "Explorer Robot": {"start": (1, 1), "end": (25, 10)},
+#     "Scout Robot": {"start": (14, 15), "end": (48, 35)},
+#     "Surveyor Robot": {"start": (30, 26), "end": (47, 48)},
+#     "Drone Robot": {"start": (4, 7), "end": (24, 35)}
+# }
+
+# # Define colors for robots
+# colors = {
+#     "Explorer Robot": "blue",
+#     "Scout Robot": "green",
+#     "Surveyor Robot": "purple",
+#     "Drone Robot": "red"
+# }
+
+# # Create robots dictionary with paths, colors, and messages
+# robots = {}
+# all_paths = []
+# for robot_name, pos in robot_positions.items():
+#     path = generate_intermediate_path(pos["start"], pos["end"])
+#     all_paths.append(path)
+#     robots[robot_name] = {
+#         "path": path,
+#         "color": colors[robot_name],
+#         "messages": generate_messages(path, robot_name, colors[robot_name])
+#     }
+
+# # Generate obstacles
+# num_obstacles = 50
+# obstacles = generate_obstacles(num_obstacles, all_paths)
+
+# # Create a Plotly figure for the map
+# fig = go.Figure()
+
+# # Add the tree image as obstacles
+# tree_img = Image.open('tree.png')
+# for x, y in obstacles:
+#     fig.add_layout_image(
+#         source=tree_img,
+#         x=x - 0.5,
+#         y=y + 0.5,
+#         xref="x",
+#         yref="y",
+#         sizex=2,
+#         sizey=2,
+#         xanchor="center",
+#         yanchor="middle"
+#     )
+
+# # Add the robots' paths and positions with enhanced styling
+# for robot_name, robot_data in robots.items():
+#     path = robot_data["path"]
+#     color = robot_data["color"]
+#     messages = robot_data["messages"]
+    
+#     fig.add_trace(go.Scatter(x=[], y=[], mode='lines+markers', line=dict(color=color, dash='dot'), marker=dict(size=6), name=f'{robot_name} Path'))
+    
+#     robot_position = path[0]
+#     fig.add_trace(go.Scatter(
+#         x=[robot_position[0]], 
+#         y=[robot_position[1]], 
+#         mode='markers+text', 
+#         marker=dict(size=15, color=color, symbol='circle', line=dict(width=2, color='black')), 
+#         text=[robot_name], 
+#         textposition='top center', 
+#         name=robot_name
+#     ))
+
+# fig.update_layout(
+#     title='Enhanced Robots Navigation Map with Tree Obstacles',
+#     xaxis=dict(range=[0, 50], autorange=False, title='X Coordinate'),
+#     yaxis=dict(range=[0, 50], autorange=False, title='Y Coordinate'),
+#     width=900,
+#     height=700,
+#     paper_bgcolor='lightgrey',
+#     plot_bgcolor='white',
+#     showlegend=True
+# )
+
+# # Layout: Map and chat in the left column, image in the right column
+# col1, col2 = st.columns([10, 3])
+
+# with col1:
+#     # Map and chat section
+#     map_placeholder = st.empty()
+#     chat_placeholder = st.empty()
+
+# with col2:
+#     # Robot's view section
+#     st.subheader("Simulation Overview")
+#     sim_image = Image.open('sim.png')
+#     st.image(sim_image, caption="Robot's Point of View", use_column_width=True)
+
+# # Button to control movement
+# if st.button('Acknowledge'):
+#     st.session_state.paused = not st.session_state.paused
+# else:
+#     if 'paused' not in st.session_state:
+#         st.session_state.paused = False
+
+
+# # JavaScript for blinking text
+# st.markdown("""
+#     <style>
+#     @keyframes blinker {
+#         50% { opacity: 0; }
+#     }
+#     .blinking {
+#         animation: blinker 1s linear infinite;
+#     }
+#     </style>
+#     """, unsafe_allow_html=True)
+
+# # Simulate robots' movement
+# robot_positions_current = {name: data["path"][0] for name, data in robots.items()}
+# while any(pos != path[-1] for name, (path, pos) in zip(robots.keys(), zip([data["path"] for data in robots.values()], robot_positions_current.values()))):
+#     if not st.session_state.paused:
+#         for robot_name, robot_data in robots.items():
+#             path = robot_data["path"]
+#             color = robot_data["color"]
+#             messages = robot_data["messages"]
+            
+#             current_pos_index = path.index(robot_positions_current[robot_name])
+#             if current_pos_index < len(path) - 1:
+#                 robot_positions_current[robot_name] = path[current_pos_index + 1]
+                
+#                 # Update the visible part of the path
+#                 start_index = max(0, current_pos_index - 2)
+#                 end_index = min(len(path), current_pos_index + 3)
+#                 visible_path = path[start_index:end_index]
+#                 path_x, path_y = zip(*visible_path)
+
+#                 # Set opacities for fading effect
+#                 opacities = [0.2, 0.5, 1.0, 0.5, 0.2][:len(path_x)]
+
+#                 # Update the robot's path and position
+#                 for trace in fig.data:
+#                     if trace.name == f'{robot_name} Path':
+#                         trace.x = path_x
+#                         trace.y = path_y
+#                         trace.marker = dict(size=6, opacity=opacities)
+#                     elif trace.name == robot_name:
+#                         trace.x = [robot_positions_current[robot_name][0]]
+#                         trace.y = [robot_positions_current[robot_name][1]]
+                
+#                 # Display the updated map
+#                 with map_placeholder:
+#                     st.plotly_chart(fig)
+        
+#                 # Display communication messages
+#                 with chat_placeholder:
+#                     st.markdown(f"<div class='blinking'>**{robot_name}:**</div>", unsafe_allow_html=True)
+#                     if robot_positions_current[robot_name] in messages:
+#                         st.markdown(messages[robot_positions_current[robot_name]], unsafe_allow_html=True)
+#                     else:
+#                         st.empty()
+
+#                 # Wait for a while to simulate real-time movement
+#                 time.sleep(1)
+#     else:
+#         # Display paused message
+#         with map_placeholder:
+#             st.plotly_chart(fig)
+#         with chat_placeholder:
+#             st.markdown("<div class='blinking'><b>Movement Paused. Click 'Acknowledge' to Resume.</b></div>", unsafe_allow_html=True)
+#         time.sleep(1)
 
 import streamlit as st
 import plotly.graph_objects as go
@@ -3586,12 +3797,18 @@ with col2:
     sim_image = Image.open('sim.png')
     st.image(sim_image, caption="Robot's Point of View", use_column_width=True)
 
+# Initialize session state
+if 'paused' not in st.session_state:
+    st.session_state.paused = False
+if 'message_displayed' not in st.session_state:
+    st.session_state.message_displayed = False
+if 'robot_positions_current' not in st.session_state:
+    st.session_state.robot_positions_current = {name: data["path"][0] for name, data in robots.items()}
+
 # Button to control movement
 if st.button('Acknowledge'):
-    st.session_state.paused = not st.session_state.paused
-else:
-    if 'paused' not in st.session_state:
-        st.session_state.paused = False
+    st.session_state.paused = False
+    st.session_state.message_displayed = False
 
 # JavaScript for blinking text
 st.markdown("""
@@ -3606,17 +3823,16 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # Simulate robots' movement
-robot_positions_current = {name: data["path"][0] for name, data in robots.items()}
-while any(pos != path[-1] for name, (path, pos) in zip(robots.keys(), zip([data["path"] for data in robots.values()], robot_positions_current.values()))):
+while any(pos != path[-1] for name, (path, pos) in zip(robots.keys(), zip([data["path"] for data in robots.values()], st.session_state.robot_positions_current.values()))):
     if not st.session_state.paused:
         for robot_name, robot_data in robots.items():
             path = robot_data["path"]
             color = robot_data["color"]
             messages = robot_data["messages"]
             
-            current_pos_index = path.index(robot_positions_current[robot_name])
+            current_pos_index = path.index(st.session_state.robot_positions_current[robot_name])
             if current_pos_index < len(path) - 1:
-                robot_positions_current[robot_name] = path[current_pos_index + 1]
+                st.session_state.robot_positions_current[robot_name] = path[current_pos_index + 1]
                 
                 # Update the visible part of the path
                 start_index = max(0, current_pos_index - 2)
@@ -3634,8 +3850,8 @@ while any(pos != path[-1] for name, (path, pos) in zip(robots.keys(), zip([data[
                         trace.y = path_y
                         trace.marker = dict(size=6, opacity=opacities)
                     elif trace.name == robot_name:
-                        trace.x = [robot_positions_current[robot_name][0]]
-                        trace.y = [robot_positions_current[robot_name][1]]
+                        trace.x = [st.session_state.robot_positions_current[robot_name][0]]
+                        trace.y = [st.session_state.robot_positions_current[robot_name][1]]
                 
                 # Display the updated map
                 with map_placeholder:
@@ -3643,12 +3859,14 @@ while any(pos != path[-1] for name, (path, pos) in zip(robots.keys(), zip([data[
         
                 # Display communication messages
                 with chat_placeholder:
-                    st.markdown(f"<div class='blinking'>**{robot_name}:**</div>", unsafe_allow_html=True)
-                    if robot_positions_current[robot_name] in messages:
-                        st.markdown(messages[robot_positions_current[robot_name]], unsafe_allow_html=True)
-                    else:
-                        st.empty()
-
+                    if not st.session_state.message_displayed:
+                        if st.session_state.robot_positions_current[robot_name] in messages:
+                            st.markdown(f"<div class='blinking'>**{robot_name}:**</div>", unsafe_allow_html=True)
+                            st.markdown(messages[st.session_state.robot_positions_current[robot_name]], unsafe_allow_html=True)
+                            st.session_state.paused = True
+                            st.session_state.message_displayed = True
+                        else:
+                            st.empty()
                 # Wait for a while to simulate real-time movement
                 time.sleep(1)
     else:
@@ -3658,8 +3876,6 @@ while any(pos != path[-1] for name, (path, pos) in zip(robots.keys(), zip([data[
         with chat_placeholder:
             st.markdown("<div class='blinking'><b>Movement Paused. Click 'Acknowledge' to Resume.</b></div>", unsafe_allow_html=True)
         time.sleep(1)
-
-
 
 
 #BLINK CHATBOX TEST1
