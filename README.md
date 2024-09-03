@@ -9,7 +9,7 @@ This project is a real-time simulation of robots navigating through a grid map w
 - **Real-time Robot Simulation**: Visualize multiple robots moving from start to end positions on a grid map.
 - **Dynamic Obstacles**: Display obstacles on the map using an image.
 - **Communication Messages**: Display real-time messages about robots' statuses and alerts.
-- **Simulation Control**: Pause and resume the simulation with a button.
+<!-- - **Simulation Control**: Pause and resume the simulation with a button. -->
 
 ## Requirements
 
