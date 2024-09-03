@@ -3573,7 +3573,7 @@ fig.update_layout(
 )
 
 # Layout: Map and chat in the left column, image in the right column
-col1, col2 = st.columns([6, 2.5])
+col1, col2 = st.columns([10, 3])
 
 with col1:
     # Map and chat section
@@ -3584,7 +3584,7 @@ with col2:
     # Robot's view section
     st.subheader("Simulation Overview")
     sim_image = Image.open('sim.png')
-    st.image(sim_image, caption="Robot's Point of View", use_column_width=False)
+    st.image(sim_image, caption="Robot's Point of View", use_column_width=True)
 
 # Button to control movement
 if st.button('Acknowledge'):
